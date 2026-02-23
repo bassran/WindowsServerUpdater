@@ -27,7 +27,7 @@ $smtpPort     = 587
 $smtpFrom     = "absender@example.com"
 $smtpTo       = "empfaenger@example.com"
 $smtpUser     = "absender@example.com"
-# Ablageort der Passwort-Dateien (AES256) für die Passwortverschlüsselung
+# Ablageort der Passwort-Dateien (AES256) für die Passwortverschluesselung
 $aesKeyFile   = Join-Path $scriptDir "mail_aes.key"
 $encPwdFile   = Join-Path $scriptDir "mail_password.enc"
 
