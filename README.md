@@ -1,11 +1,11 @@
 # WindowsServerUpdater
 Powershell toolset to manage Windows Server updates, reliable and trackable.
 
-Purpose
+**Purpose**
 
 Automates a complete Windows system update with prerequisites, network adapter management, and email reporting.
 
-Key Features
+**Key Features**
 
 Three-stage execution separated by system restarts:
 
@@ -25,10 +25,14 @@ SMTP Configuration Required:  Must be customized with server, port, sender/recip
 
                               Use "Setup-MailPassword.ps1" for generating encrypted mail password and key.
 
-Usage
+<ins>**Usage**</ins>
 
-1. Copy required files SetupMailPassword, WindowsUpdateFull and WindowsUpdateFull_Starter into the same folder on the target server, e.g. C:\Scripts
-2. Create password files by executing "Setup-MailPassword.ps1". Here you must enter the smtp sender password.
-3. Enter valid mail information in section "SMTP-Konfiguration"
-4. Run "WindowsUpdateFull_Starter.com" as administrator
-5. Wait for status mail arriving
+1. Copy required files:
+   *SetupMailPassword,*
+   *WindowsUpdateFull,*
+   *WindowsUpdateFull_Starter*
+   into the same folder on the target server, e.g. C:\Scripts
+3. Create password files by executing "Setup-MailPassword.ps1". Here you must enter the smtp sender password.
+4. Enter valid mail information in section "SMTP-Konfiguration"
+5. Run "WindowsUpdateFull_Starter.com" as administrator
+6. Wait for status mail arriving
