@@ -27,7 +27,8 @@ SMTP Configuration Required:  Must be customized with server, port, sender/recip
 
 Usage
 
-1. Create password files by executing "Setup-MailPassword.ps1". Here you must enter the smtp sender password.
-2. Enter valid mail information in section "SMTP-Konfiguration"
-3. Run "WindowsUpdateFull_Starter.com" as administrator
-4. Wait for status mail arriving
+1. Copy required files SetupMailPassword, WindowsUpdateFull and WindowsUpdateFull_Starter into the same folder on the target server, e.g. C:\Scripts
+2. Create password files by executing "Setup-MailPassword.ps1". Here you must enter the smtp sender password.
+3. Enter valid mail information in section "SMTP-Konfiguration"
+4. Run "WindowsUpdateFull_Starter.com" as administrator
+5. Wait for status mail arriving
