@@ -27,7 +27,7 @@ SMTP Configuration Required:  Must be customized with server, port, sender/recip
 
 Usage
 
-1. Create password files by executing "Setup-MailPassword.ps1". Here you must enter the sender smtp password.
+1. Create password files by executing "Setup-MailPassword.ps1". Here you must enter the smtp sender password.
 2. Enter valid mail information in section "SMTP-Konfiguration"
 3. Run "WindowsUpdateFull_Starter.com" as administrator
 4. Wait for status mail arriving
