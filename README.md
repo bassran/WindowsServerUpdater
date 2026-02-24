@@ -24,3 +24,10 @@ Resilience:                   Persistent step tracking via file to handle script
 SMTP Configuration Required:  Must be customized with server, port, sender/recipient addresses before deployment.
 
                               Plese use "Setup-MailPassword.ps1" for generating encrypted mail password and key.
+
+Usage
+
+1. Create password files by executing "Setup-MailPassword.ps1". Here you must enter the sender smtp password.
+2. Enter valid mail information in section "SMTP-Konfiguration"
+3. Run "WindowsUpdateFull_Starter.com" as administrator
+4. Wait for status mail arriving
