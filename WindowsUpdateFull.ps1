@@ -1,12 +1,12 @@
-# ==============================================================================
+# ======================================================================================================
 #  WindowsUpdateFull.ps1
 # .SYNOPSYS: Führt ein vollständiges Windows System-Update durch. Es werden
 #            Voraussetzungen geprüft und installiert, zwei Neustarts durchgeführt
 #            und nach Abschluss eine Status-Mail an den angegebenen Empfänger gesendet.
-# .REQUIRES: Windows Server 2016 or higher, Powershell 3 or higher
+# .REQUIRES: Windows 10 Version 1809 or higher, Windows Server 2019 or higher, Powershell 5.1 or higher
 # .AUTHOR:   Malte Koelln
 # .REVISION: 02/24/2026
-# ==============================================================================
+# ======================================================================================================
 
 $scriptPath = $MyInvocation.MyCommand.Path
 $scriptDir  = Split-Path $scriptPath -Parent
