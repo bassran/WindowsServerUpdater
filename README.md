@@ -1,11 +1,11 @@
 # WindowsServerUpdater
 Powershell toolset to manage Windows Server updates, reliable and trackable.
 
-**Purpose**
+## **Purpose**
 
 Automates a complete Windows system update with prerequisites, network adapter management, and email reporting.
 
-**Key Features**
+## **Key Features**
 
 Three-stage execution separated by system restarts:
 
@@ -25,7 +25,7 @@ SMTP Configuration Required:  Must be customized with server, port, sender/recip
 
                               Use "Setup-MailPassword.ps1" for generating encrypted mail password and key.
 
-<ins>**Usage**</ins>
+## **Usage**
 
 1. Copy required files:
    *SetupMailPassword,*
