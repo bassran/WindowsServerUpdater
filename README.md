@@ -23,7 +23,7 @@ Resilience:                   Persistent step tracking via file to handle script
 
 SMTP Configuration Required:  Must be customized with server, port, sender/recipient addresses before deployment.
 
-                              Plese use "Setup-MailPassword.ps1" for generating encrypted mail password and key.
+                              Use "Setup-MailPassword.ps1" for generating encrypted mail password and key.
 
 Usage
 
