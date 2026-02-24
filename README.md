@@ -36,3 +36,11 @@ SMTP Configuration Required:  Must be customized with server, port, sender/recip
 4. Enter valid mail information in section "SMTP-Konfiguration"
 5. Run "WindowsUpdateFull_Starter.cmd" as administrator
 6. Wait for status mail arriving
+
+## ToDo
+
+- Consolidate scripts improve usability
+- Optimizing usage instructions
+- Changing filenames, comments and logs from German to English
+- Providing tips how to set up scheduled tasks in Windows
+- Add autoupdate options via git and adjust mailpath in main-script
