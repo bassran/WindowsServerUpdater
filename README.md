@@ -37,7 +37,7 @@ SMTP Configuration Required:  Must be customized with server, port, sender/recip
 5. Run "WindowsUpdateFull_Starter.cmd" as administrator
 6. Wait for status mail arriving
 
-## ToDo
+### ToDo
 
 - Consolidate scripts improve usability
 - Optimizing usage instructions
