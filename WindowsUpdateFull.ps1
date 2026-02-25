@@ -4,7 +4,7 @@
 #            Voraussetzungen geprüft und installiert, zwei Neustarts durchgeführt
 #            und nach Abschluss eine Status-Mail an den angegebenen Empfänger gesendet.
 # .REQUIRES: Windows 10 Version 1809 or higher, Windows Server 2019 or higher, Powershell 5.1 or higher
-# .AUTHOR:   Malte Koelln
+# .AUTHOR:   bassran
 # .REVISION: 02/24/2026
 # ======================================================================================================
 
