@@ -22,10 +22,10 @@ $logFile      = Join-Path $scriptDir ($computerName + "_" + $date + "_WindowsUpd
 # Password files are created via Setup script (Setup-MailPassword.ps1).
 # ==============================================================================
 $smtpServer   = "smtp.example.com"
-$smtpPort     = 587
-$smtpFrom     = "absender@example.com"
-$smtpTo       = "empfaenger@example.com"
-$smtpUser     = "absender@example.com"
+$smtpPort     = 587 # Adjust if your SMTP server uses a different port (e.g., 465 for SSL)
+$smtpFrom     = "sender@example.com"
+$smtpTo       = "recipient@example.com"
+$smtpUser     = "sender@example.com"
 $aesKeyFile = Join-Path $scriptDir "mail_aes.key"
 $encPwdFile = Join-Path $scriptDir "mail_password.enc"
 
