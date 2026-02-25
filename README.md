@@ -41,6 +41,6 @@ SMTP Configuration Required:  Must be customized with server, port, sender/recip
 
 - Consolidate scripts improve usability
 - Optimizing usage instructions
-- Changing filenames, comments and logs from German to English
+- Changing all filenames, comments and logs from German to English
 - Providing tips how to set up scheduled tasks in Windows
 - Add autoupdate options via git and adjust mailpath in main-script
