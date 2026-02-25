@@ -1,8 +1,8 @@
 # ======================================================================================================
 #  WindowsUpdateFull.ps1
-# .SYNOPSYS: Führt ein vollständiges Windows System-Update durch. Es werden
-#            Voraussetzungen geprüft und installiert, zwei Neustarts durchgeführt
-#            und nach Abschluss eine Status-Mail an den angegebenen Empfänger gesendet.
+# .SYNOPSYS: Performs a complete Windows system update. Prerequisites are checked
+#            and installed, two restarts are performed and upon completion a status email
+#            is sent to the specified recipient.
 # .REQUIRES: Windows 10 Version 1809 or higher, Windows Server 2019 or higher, Powershell 5.1 or higher
 # .AUTHOR:   bassran
 # .REVISION: 02/24/2026
@@ -18,8 +18,8 @@ $date         = Get-Date -Format "yyyy-MM-dd"
 $logFile      = Join-Path $scriptDir ($computerName + "_" + $date + "_WindowsUpdate.log")
 
 # ==============================================================================
-# SMTP-Konfiguration
-# Passwort-Dateien werden per Setup-Script (Setup-MailPassword.ps1) erstellt.
+# SMTP Configuration
+# Password files are created via Setup script (Setup-MailPassword.ps1).
 # ==============================================================================
 $smtpServer   = "smtp.example.com"
 $smtpPort     = 587
@@ -41,9 +41,9 @@ function Write-Log {
 }
 
 # ==============================================================================
-# Mail-Versand
-# $Subject: wenn leer, wird der Dateiname als Betreff verwendet (Erfolgsfall).
-#           Bei Fehler wird "ERROR <HOSTNAME> <DATUM>" uebergeben.
+# Email sending
+# $Subject: if empty, the file name is used as the subject (success case).
+#           In case of error, "ERROR <HOSTNAME> <DATE>" is passed.
 # ==============================================================================
 function Send-LogByMail {
     param(
@@ -51,18 +51,18 @@ function Send-LogByMail {
         [string]$Subject = ""
     )
 
-    Write-Log "Sende Log-Datei per E-Mail..."
+    Write-Log "Sending log file via email..."
 
     if (-not (Test-Path $aesKeyFile)) {
-        Write-Log ("AES-Key-Datei nicht gefunden: " + $aesKeyFile) "ERROR"
+        Write-Log ("AES key file not found: " + $aesKeyFile) "ERROR"
         return
     }
     if (-not (Test-Path $encPwdFile)) {
-        Write-Log ("Verschluesseltes Passwort nicht gefunden: " + $encPwdFile) "ERROR"
+        Write-Log ("Encrypted password not found: " + $encPwdFile) "ERROR"
         return
     }
     if (-not (Test-Path $LogFilePath)) {
-        Write-Log ("Log-Datei nicht gefunden: " + $LogFilePath) "ERROR"
+        Write-Log ("Log file not found: " + $LogFilePath) "ERROR"
         return
     }
 
@@ -74,10 +74,10 @@ function Send-LogByMail {
 
         if ([string]::IsNullOrWhiteSpace($Subject)) {
             $Subject = [System.IO.Path]::GetFileName($LogFilePath)
-            $body    = "Windows Update Log vom Computer $computerName ($date). Log-Datei im Anhang."
+            $body    = "Windows Update log from computer $computerName ($date). Log file attached."
         }
         else {
-            $body = "Windows Update Script FEHLER auf $computerName am $date. Details siehe angehaengte Log-Datei."
+            $body = "Windows Update script ERROR on $computerName on $date. See attached log file for details."
         }
 
         $mailParams = @{
@@ -93,25 +93,25 @@ function Send-LogByMail {
         }
 
         Send-MailMessage @mailParams
-        Write-Log "E-Mail erfolgreich gesendet an: $smtpTo"
+        Write-Log "Email sent successfully to: $smtpTo"
     }
     catch {
-        Write-Log ("Fehler beim E-Mail-Versand: " + $_) "ERROR"
+        Write-Log ("Error sending email: " + $_) "ERROR"
     }
 }
 
-# Hilfsfunktion: Baut den Fehler-Betreff zusammen
+# Helper function: builds the error subject
 function Get-ErrorSubject {
     $d = Get-Date -Format "yyyy-MM-dd"
     return "ERROR $computerName $d"
 }
 
 # ==============================================================================
-# WinGet-Installation als Fallback (direkt via GitHub MSIX)
-# Wird verwendet, wenn Repair-WinGetPackageManager fehlschlaegt oder haengt.
+# WinGet installation as fallback (directly via GitHub MSIX)
+# Used when Repair-WinGetPackageManager fails or hangs.
 # ==============================================================================
 function Install-WinGetFallback {
-    Write-Log "Starte WinGet-Fallback-Installation via GitHub..."
+    Write-Log "Starting WinGet fallback installation via GitHub..."
 
     try {
         $apiUrl   = "https://api.github.com/repos/microsoft/winget-cli/releases/latest"
@@ -122,18 +122,18 @@ function Install-WinGetFallback {
         $licAsset  = $release.assets | Where-Object { $_.name -like "*.License1.xml" } | Select-Object -First 1
 
         if (-not $msixAsset) {
-            Write-Log "Kein MSIX-Bundle in GitHub-Release gefunden." "ERROR"
+            Write-Log "No MSIX bundle found in GitHub release." "ERROR"
             return $false
         }
 
         $tmpMsix = Join-Path $env:TEMP "winget.msixbundle"
         $tmpLic  = Join-Path $env:TEMP "winget_license.xml"
 
-        Write-Log ("Lade WinGet herunter: " + $msixAsset.browser_download_url)
+        Write-Log ("Downloading WinGet: " + $msixAsset.browser_download_url)
         Invoke-WebRequest -Uri $msixAsset.browser_download_url -OutFile $tmpMsix -TimeoutSec 120
 
         if ($licAsset) {
-            Write-Log ("Lade Lizenz herunter: " + $licAsset.browser_download_url)
+            Write-Log ("Downloading license: " + $licAsset.browser_download_url)
             Invoke-WebRequest -Uri $licAsset.browser_download_url -OutFile $tmpLic -TimeoutSec 30
             Add-AppxProvisionedPackage -Online -PackagePath $tmpMsix -LicensePath $tmpLic | Out-Null
         }
@@ -141,11 +141,11 @@ function Install-WinGetFallback {
             Add-AppxPackage -Path $tmpMsix | Out-Null
         }
 
-        Write-Log "WinGet-Fallback-Installation abgeschlossen."
+        Write-Log "WinGet fallback installation completed."
         return $true
     }
     catch {
-        Write-Log ("WinGet-Fallback fehlgeschlagen: " + $_) "ERROR"
+        Write-Log ("WinGet fallback failed: " + $_) "ERROR"
         return $false
     }
     finally {
@@ -155,7 +155,7 @@ function Install-WinGetFallback {
 }
 
 # ==============================================================================
-# Prueft ob winget verfuegbar ist
+# Check if winget is available
 # ==============================================================================
 function Test-WinGet {
     try {
@@ -168,7 +168,7 @@ function Test-WinGet {
 }
 
 # ==============================================================================
-# Hauptlogik
+# Main logic
 # ==============================================================================
 if (Test-Path $stepFile) {
     $step = (Get-Content $stepFile -Raw).Trim()
@@ -178,24 +178,24 @@ else {
 }
 
 Write-Log "================================================================"
-Write-Log "Script gestartet. Aktueller Schritt: $step"
+Write-Log "Script started. Current step: $step"
 
 switch ($step) {
 
     "1" {
-        Write-Log "SCHRITT 1: NuGet und WinGet einrichten..."
+        Write-Log "STEP 1: Setting up NuGet and WinGet..."
 
         try {
             $progressPreference = 'SilentlyContinue'
 
-            Write-Log "Installiere NuGet PackageProvider..."
+            Write-Log "Installing NuGet PackageProvider..."
             Install-PackageProvider -Name NuGet -Force -ErrorAction Stop | Out-Null
 
-            Write-Log "Installiere Microsoft.WinGet.Client Modul..."
+            Write-Log "Installing Microsoft.WinGet.Client module..."
             Install-Module -Name Microsoft.WinGet.Client -Force -Repository PSGallery -ErrorAction Stop | Out-Null
 
-            # --- Repair-WinGetPackageManager mit Timeout (90 Sek.) ---
-            Write-Log "Fuehre Repair-WinGetPackageManager aus (Timeout: 90s)..."
+            # --- Repair-WinGetPackageManager with timeout (90 sec) ---
+            Write-Log "Running Repair-WinGetPackageManager (timeout: 90s)..."
             $repairJob = Start-Job -ScriptBlock {
                 Import-Module Microsoft.WinGet.Client -Force
                 Repair-WinGetPackageManager -AllUsers
@@ -206,54 +206,54 @@ switch ($step) {
             if ($completed) {
                 $jobOutput = Receive-Job -Job $repairJob 2>&1
                 if ($repairJob.State -eq 'Failed') {
-                    Write-Log ("Repair-WinGetPackageManager Job fehlgeschlagen: " + ($jobOutput -join ' ')) "WARN"
+                    Write-Log ("Repair-WinGetPackageManager job failed: " + ($jobOutput -join ' ')) "WARN"
                 }
                 else {
-                    Write-Log "Repair-WinGetPackageManager abgeschlossen."
+                    Write-Log "Repair-WinGetPackageManager completed."
                 }
             }
             else {
                 Stop-Job  -Job $repairJob
-                Write-Log "Repair-WinGetPackageManager hat Timeout ueberschritten - wird abgebrochen." "WARN"
+                Write-Log "Repair-WinGetPackageManager exceeded timeout - aborting." "WARN"
             }
             Remove-Job -Job $repairJob -Force
 
-            # --- Pruefe ob WinGet nun verfuegbar ist, sonst Fallback ---
+            # --- Check if WinGet is now available, otherwise fallback ---
             if (Test-WinGet) {
-                Write-Log "WinGet ist verfuegbar. Schritt 1 erfolgreich."
+                Write-Log "WinGet is available. Step 1 successful."
             }
             else {
-                Write-Log "WinGet nicht verfuegbar nach Repair - starte Fallback-Installation..." "WARN"
+                Write-Log "WinGet not available after repair - starting fallback installation..." "WARN"
                 $fallbackOk = Install-WinGetFallback
                 if (-not $fallbackOk) {
-                    throw "WinGet konnte weder per Repair noch per Fallback installiert werden."
+                    throw "WinGet could not be installed via repair or fallback."
                 }
             }
         }
         catch {
-            Write-Log ("Fehler in Schritt 1: " + $_) "ERROR"
+            Write-Log ("Error in step 1: " + $_) "ERROR"
             Send-LogByMail -LogFilePath $logFile -Subject (Get-ErrorSubject)
             exit 1
         }
 
         Set-Content -Path $stepFile -Value "2" -Encoding UTF8
-        Write-Log "Step-Marker auf 2 gesetzt."
+        Write-Log "Step marker set to 2."
 
-        Write-Log "Erstelle Scheduled Task '$taskName'..."
+        Write-Log "Creating scheduled task '$taskName'..."
         $action    = New-ScheduledTaskAction -Execute "powershell.exe" -Argument ("-ExecutionPolicy Bypass -NonInteractive -File `"" + $scriptPath + "`"")
         $trigger   = New-ScheduledTaskTrigger -AtStartup
         $principal = New-ScheduledTaskPrincipal -UserId "SYSTEM" -RunLevel Highest -LogonType ServiceAccount
         $settings  = New-ScheduledTaskSettingsSet -AllowStartIfOnBatteries -DontStopIfGoingOnBatteries
         Register-ScheduledTask -TaskName $taskName -Action $action -Trigger $trigger -Principal $principal -Settings $settings -Force | Out-Null
-        Write-Log "Scheduled Task erfolgreich erstellt."
+        Write-Log "Scheduled task created successfully."
 
-        Write-Log "Neustart wird in 10 Sekunden durchgefuehrt..."
+        Write-Log "Restarting in 10 seconds..."
         Start-Sleep -Seconds 2
-        shutdown.exe /r /t 10 /c "WindowsUpdate-Script: Neustart nach Schritt 1" /d p:4:1
+        shutdown.exe /r /t 10 /c "WindowsUpdate-Script: Restart after step 1" /d p:4:1
     }
 
     "2" {
-        Write-Log "SCHRITT 2: Netzwerkadapter neu starten und Windows Updates installieren..."
+        Write-Log "STEP 2: Restart network adapters and install Windows updates..."
 
         try {
             Write-Log "Warte 60 Sekunden und starte alle Netzwerkadapter neu..."
@@ -263,52 +263,52 @@ switch ($step) {
             Write-Log "Netzwerkadapter neugestartet."
         }
         catch {
-            Write-Log ("Warnung beim Neustart der Netzwerkadapter: " + $_) "WARN"
+            Write-Log ("Warning restarting network adapters: " + $_) "WARN"
         }
 
         try {
-            Write-Log "Pruefe PSWindowsUpdate Modul..."
+            Write-Log "Checking PSWindowsUpdate module..."
             if (-not (Get-Module -ListAvailable -Name PSWindowsUpdate)) {
-                Write-Log "PSWindowsUpdate nicht gefunden - installiere..."
+                Write-Log "PSWindowsUpdate not found - installing..."
                 Install-Module -Name PSWindowsUpdate -Force -Scope AllUsers | Out-Null
-                Write-Log "PSWindowsUpdate installiert."
+                Write-Log "PSWindowsUpdate installed."
             }
             else {
-                Write-Log "PSWindowsUpdate bereits vorhanden."
+                Write-Log "PSWindowsUpdate already present."
             }
 
             Import-Module PSWindowsUpdate -Force
-            Write-Log "PSWindowsUpdate Modul geladen."
+            Write-Log "PSWindowsUpdate module loaded."
 
             $ConfirmPreference = 'None'
-            Write-Log "Suche nach verfuegbaren Windows Updates..."
+            Write-Log "Searching for available Windows updates..."
             $updates = Get-WindowsUpdate -AcceptAll -IgnoreReboot
 
             if ($updates) {
-                Write-Log ("Updates gefunden: " + $updates.Count + " Update(s). Starte Installation...")
+                Write-Log ("Updates found: " + $updates.Count + " update(s). Starting installation...")
                 Install-WindowsUpdate -AcceptAll -IgnoreReboot -AutoReboot:$false | ForEach-Object {
                     Write-Log ("  Update: " + $_.Title + " - Status: " + $_.Status)
                 }
-                Write-Log "Update-Installation abgeschlossen."
+                Write-Log "Update installation completed."
             }
             else {
-                Write-Log "Keine Updates verfuegbar."
+                Write-Log "No updates available."
             }
         }
         catch {
-            Write-Log ("Fehler in Schritt 2: " + $_) "ERROR"
+            Write-Log ("Error in step 2: " + $_) "ERROR"
             Send-LogByMail -LogFilePath $logFile -Subject (Get-ErrorSubject)
             exit 1
         }
 
         Set-Content -Path $stepFile -Value "3" -Encoding UTF8
-        Write-Log "Step-Marker auf 3 gesetzt."
-        Write-Log "Neustart wird in 10 Sekunden durchgefuehrt..."
-        shutdown.exe /r /t 10 /c "Installieren von WindowsUpdates" /d p:4:1
+        Write-Log "Step marker set to 3."
+        Write-Log "Restarting in 10 seconds..."
+        shutdown.exe /r /t 10 /c "Installing Windows updates" /d p:4:1
     }
 
     "3" {
-        Write-Log "SCHRITT 3: Aufraeumen nach Updates..."
+        Write-Log "STEP 3: Cleaning up after updates..."
 
         try {
             Write-Log "Warte 60 Sekunden und starte alle Netzwerkadapter neu..."
@@ -318,24 +318,24 @@ switch ($step) {
             Write-Log "Netzwerkadapter neugestartet."
         }
         catch {
-            Write-Log ("Warnung beim Neustart der Netzwerkadapter: " + $_) "WARN"
+            Write-Log ("Warning restarting network adapters: " + $_) "WARN"
         }
 
         Remove-Item $stepFile -Force -ErrorAction SilentlyContinue
-        Write-Log "Step-Marker-Datei entfernt."
+        Write-Log "Step marker file removed."
 
         Unregister-ScheduledTask -TaskName $taskName -Confirm:$false -ErrorAction SilentlyContinue
-        Write-Log "Scheduled Task entfernt."
+        Write-Log "Scheduled task removed."
 
         Write-Log "================================================================"
-        Write-Log "FERTIG: Windows Update Prozess vollstaendig abgeschlossen!"
+        Write-Log "FINISHED: Windows Update process completed successfully!"
 
-        # Erfolgsmail - Betreff = Dateiname.
+        # Success email - subject = file name.
         Send-LogByMail -LogFilePath $logFile
     }
 
     default {
-        Write-Log ("Unbekannter Schritt '" + $step + "' - breche ab.") "ERROR"
+        Write-Log ("Unknown step '" + $step + "' - aborting.") "ERROR"
         Send-LogByMail -LogFilePath $logFile -Subject (Get-ErrorSubject)
         exit 1
     }
